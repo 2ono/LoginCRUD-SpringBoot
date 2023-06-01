@@ -2,8 +2,10 @@ package com.crud.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.crud.dto.BoardDTO;
 import com.crud.entity.BoardEntity;
@@ -34,6 +36,25 @@ public class BoardService {
 
 		}
 		return boardDTOList;
+	}
+
+	@Transactional
+	public void updateHits(Long id) {
+		// TODO Auto-generated method stub
+		boardRepository.updateHits(id);
+	}
+
+	public BoardDTO findById(Long id) {
+		// TODO Auto-generated method stub
+		Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(id);
+		if(optionalBoardEntity.isPresent()) {
+			BoardEntity boardEntity = optionalBoardEntity.get();
+			BoardDTO boardDTO = BoardDTO.toBoardDTO(boardEntity);
+			return boardDTO;
+		} else {
+			return null;
+		}
+		
 	}
 
 }
