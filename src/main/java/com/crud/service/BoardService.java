@@ -57,4 +57,11 @@ public class BoardService {
 		
 	}
 
+	public BoardDTO update(BoardDTO boardDTO) {
+		// TODO Auto-generated method stub
+		BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
+		boardRepository.save(boardEntity);
+		return findById(boardDTO.getId());
+	}
+
 }
