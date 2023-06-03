@@ -64,4 +64,9 @@ public class BoardService {
 		return findById(boardDTO.getId());
 	}
 
+	public void delete(Long id) {
+		// TODO Auto-generated method stub
+		boardRepository.deleteById(id);
+	}
+
 }
