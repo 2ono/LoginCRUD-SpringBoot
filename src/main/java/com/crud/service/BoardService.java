@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.crud.dto.BoardDTO;
 import com.crud.entity.BoardEntity;
+import com.crud.entity.BoardFileEntity;
+import com.crud.repository.BoardFileRepository;
 import com.crud.repository.BoardRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardService {
 	private final BoardRepository boardRepository;
+	private final BoardFileRepository boardFileRepository;
 
 	public void save(BoardDTO boardDTO) throws IllegalStateException, IOException {
 		// TODO Auto-generated method stub
@@ -57,8 +60,14 @@ public class BoardService {
 			String savePath = "C:/springboot_img/" + storedFileName;
 			// 5. 
 			boardFile.transferTo(new File(savePath));
+			// 6.
+			BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
+			 // 7.
+			Long savedId = boardRepository.save(boardEntity).getId();
+			BoardEntity board = boardRepository.findById(savedId).get();
 			
-			
+			BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName);
+			boardFileRepository.save(boardFileEntity);
 		}
 
 
