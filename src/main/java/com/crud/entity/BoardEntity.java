@@ -38,6 +38,11 @@ public class BoardEntity extends BaseEntity {
 
 	@Column
 	private int boardHits;
+	
+	// 1or 0 파일 있으면 1, 아니면 0
+	@Column
+	private int fileAttached;
+	
 
 	public static BoardEntity toSaveEntity(BoardDTO boardDTO) {
 		BoardEntity boardEntity = new BoardEntity();
@@ -46,8 +51,9 @@ public class BoardEntity extends BaseEntity {
 		boardEntity.setBoardTitle(boardDTO.getBoardTitle());
 		boardEntity.setBoardContents(boardDTO.getBoardContents());
 		boardEntity.setBoardHits(0);
+		// 파일 없음.
+		boardEntity.setFileAttached(0);
 		return boardEntity;
-
 	}
 
 	public static BoardEntity toUpdateEntity(BoardDTO boardDTO) {

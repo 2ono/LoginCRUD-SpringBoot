@@ -2,6 +2,8 @@ package com.crud.dto;
 
 import java.time.LocalDateTime;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.crud.entity.BoardEntity;
 
 import lombok.AllArgsConstructor;
@@ -25,6 +27,16 @@ public class BoardDTO {
 	private int boardHits;
 	private LocalDateTime boardCreatedTime;
 	private LocalDateTime boardUpdatedTime;
+	
+	// save.html -> Controller 파일 담는 용도
+	private MultipartFile boardFile;
+	// 원본 파일 이름
+	private String originalFileName;
+	// 서버 저장용 파일 이름
+	private String storedFileName;
+	//  파일 첨부 여부(첨부 1, 미첨부0)
+	private int fileAttached;
+	
 	
 	
 	

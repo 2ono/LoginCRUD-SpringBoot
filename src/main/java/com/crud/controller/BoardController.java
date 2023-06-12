@@ -1,5 +1,6 @@
 package com.crud.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -30,7 +31,7 @@ public class BoardController {
 	}
 
 	@PostMapping("/save")
-	public String save(@ModelAttribute BoardDTO boardDTO) {
+	public String save(@ModelAttribute BoardDTO boardDTO) throws IllegalStateException, IOException {
 		System.out.println("boardDTO = " + boardDTO);
 		boardService.save(boardDTO);
 
