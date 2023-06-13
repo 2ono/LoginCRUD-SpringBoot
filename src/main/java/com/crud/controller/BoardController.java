@@ -35,7 +35,7 @@ public class BoardController {
 		System.out.println("boardDTO = " + boardDTO);
 		boardService.save(boardDTO);
 
-		return "index";
+		return "redirect:/board/paging";
 	}
 
 	@GetMapping("/")

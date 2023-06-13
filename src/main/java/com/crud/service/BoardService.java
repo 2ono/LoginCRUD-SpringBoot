@@ -33,7 +33,7 @@ public class BoardService {
 
 	public void save(BoardDTO boardDTO) throws IllegalStateException, IOException {
 		// TODO Auto-generated method stub
-		// 파일 첨부 여부에 따라 로직 분리 
+		// 파일 첨부 여부에 따라 로직 분리
 		if (boardDTO.getBoardFile().isEmpty()) {
 			// 첨부 파일 없음.
 			BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
@@ -41,38 +41,36 @@ public class BoardService {
 		} else {
 			// 첨부 파일 있는경우.
 			/*
-			 *  1. DTO에 담긴 파일을 꺼냄
-			 *  2. 파일의 이름 가져옴
-			 *  3. 서버 저장용 이름으로 만듬
-			 *  내사진.jpg = 32423525345345_내사진.jpg
-			 *  4. 저장 경로 설정
-			 *  5. 해당 경로에 파일 저장 
-			 *  6. board_table에 해당 데이터 save 처리
-			 *  7. board_file_table에 해당 데이터 save 처리
+			 * 1. DTO에 담긴 파일을 꺼냄 2. 파일의 이름 가져옴 3. 서버 저장용 이름으로 만듬 내사진.jpg =
+			 * 32423525345345_내사진.jpg 4. 저장 경로 설정 5. 해당 경로에 파일 저장 6. board_table에 해당 데이터
+			 * save 처리 7. board_file_table에 해당 데이터 save 처리
 			 */
-			// 1.
-			MultipartFile boardFile =  boardDTO.getBoardFile();
-			// 2.
-			String originalFilename = boardFile.getOriginalFilename();
-			// 3. currentTimeMillis 1970년부터 현재까지 지난시간 리턴값 반환해줌
-			String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
- 			// 4.  C드라이브에 springboot_img 폴더 미리 생성 
-			String savePath = "C:/springboot_img/" + storedFileName;
-			// 5. 
-			boardFile.transferTo(new File(savePath));
 			// 6.
 			BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
-			 // 7.
+			// 7.
 			Long savedId = boardRepository.save(boardEntity).getId();
 			BoardEntity board = boardRepository.findById(savedId).get();
-			
-			BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFilename, storedFileName);
-			boardFileRepository.save(boardFileEntity);
+			for (MultipartFile boardFile : boardDTO.getBoardFile()) {
+				// 1.
+//			MultipartFile boardFile =  boardDTO.getBoardFile();
+				// 2.
+				String originalFilename = boardFile.getOriginalFilename();
+				// 3. currentTimeMillis 1970년부터 현재까지 지난시간 리턴값 반환해줌
+				String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
+				// 4. C드라이브에 springboot_img 폴더 미리 생성
+				String savePath = "C:/springboot_img/" + storedFileName;
+				// 5.
+				boardFile.transferTo(new File(savePath));
+				BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, 
+						originalFilename,
+						storedFileName);
+				boardFileRepository.save(boardFileEntity);
+			}
 		}
-
 
 	}
 
+	@Transactional
 	public List<BoardDTO> findAll() {
 		List<BoardEntity> boardEntityList = boardRepository.findAll();
 		List<BoardDTO> boardDTOList = new ArrayList<>();
@@ -89,6 +87,7 @@ public class BoardService {
 		boardRepository.updateHits(id);
 	}
 
+	@Transactional
 	public BoardDTO findById(Long id) {
 		// TODO Auto-generated method stub
 		Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(id);
@@ -141,8 +140,7 @@ public class BoardService {
 		System.out.println("boardEntities.isLast() = " + boardEntities.isLast());
 
 		// 목록: id, writer, title, hits, createdTime
-		Page<BoardDTO> boardDTOS = boardEntities.map(board -> 
-		new BoardDTO(board.getId(), board.getBoardWriter(),
+		Page<BoardDTO> boardDTOS = boardEntities.map(board -> new BoardDTO(board.getId(), board.getBoardWriter(),
 				board.getBoardTitle(), board.getBoardHits(), board.getCreatedTime()));
 
 		return boardDTOS;
